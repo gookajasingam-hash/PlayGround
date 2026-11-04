@@ -1,5 +1,17 @@
 # PlayGround
 
+## ⚔️ Chain Ninja
+
+A self-contained 2D fruit-slicing arcade game with a combo-chaining lightning sword.
+
+- **Slice** fruit by holding and swiping with a mouse or dragging a finger.
+- **Chain** cuts within 1.9 seconds to build a score multiplier and link fruit with lightning.
+- **Storm** by filling the meter, then press `SPACE` or tap **STORM** to auto-zap everything on screen for double points.
+- Dodge **bombs**, catch **golden fruit** for extra lives, and beat your saved best score.
+- Works on desktop and mobile (responsive HUD, touch controls, safe-area support), with synthesized audio and pause/game-over flows.
+
+Run it with `./start.sh` (serves the static build on port 3002) or open `index.html` through any static server.
+
 <!-- omgithub:readme:start -->
 ## 🚀 Build, play, and remix with OMGithub
 

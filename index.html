@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0a0610">
+<meta name="description" content="Chain Ninja — a 2D fruit-slicing arcade game with a combo-chaining lightning sword.">
+<title>Chain Ninja — Combo-Chaining Sword</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b0612'/%3E%3Cpath d='M18 3 7 18h7l-2 11 12-16h-7l1-10z' fill='%23ffd469'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <canvas id="game" aria-label="Chain Ninja fruit-slicing game area"></canvas>
+
+  <div id="hud" class="hidden" aria-hidden="true">
+    <div class="hud-top">
+      <div class="score-block">
+        <div class="eyebrow">SCORE</div>
+        <div id="score">0</div>
+        <div class="best-line">BEST <span id="bestHud">0</span></div>
+      </div>
+
+      <div id="combo" class="combo" aria-live="polite">
+        <div class="combo-ring">
+          <svg viewBox="0 0 76 76" aria-hidden="true">
+            <circle class="combo-track" cx="38" cy="38" r="32"></circle>
+            <circle id="comboRing" cx="38" cy="38" r="32"></circle>
+          </svg>
+          <div class="combo-center">
+            <div id="comboMult">×1</div>
+            <div id="comboCount" class="combo-cap">CHAIN 0</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="top-right">
+        <div id="hearts" class="hearts" aria-label="3 lives"></div>
+        <div class="icon-row">
+          <button id="muteBtn" class="icon-btn js-mute" type="button" aria-label="Toggle sound"></button>
+          <button id="pauseBtn" class="icon-btn" type="button" aria-label="Pause game">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="5" width="3.6" height="14" rx="1.4"></rect><rect x="13.9" y="5" width="3.6" height="14" rx="1.4"></rect></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="hint" class="hint">HOLD &amp; SWIPE TO SLICE</div>
+
+    <div class="storm-panel">
+      <div class="storm-meta">
+        <span id="stormLabel">CHAIN STORM</span>
+        <span id="stormPct">0%</span>
+      </div>
+      <div class="storm-bar"><div id="stormFill"></div></div>
+      <button id="stormBtn" class="storm-btn" type="button" aria-label="Activate Chain Storm">
+        <span id="stormBtnText">STORM</span><span class="key">SPACE</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="menu" class="overlay">
+    <section class="panel menu-panel" role="dialog" aria-labelledby="title">
+      <div class="badge"><span class="bolt">ϟ</span> 2D FRUIT NINJA <span class="bolt">ϟ</span></div>
+      <h1 id="title" class="title">CHAIN<br><span class="title-2">NINJA</span></h1>
+      <p class="tagline">SLICE · CHAIN · STORM</p>
+      <p class="lede">Every cut feeds the lightning. Keep the chain alive, multiply your score, and unleash the storm.</p>
+
+      <div class="features">
+        <div class="feature">
+          <div class="feature-icon swipe-icon" aria-hidden="true">╱</div>
+          <div class="feature-name">SLICE</div>
+          <div class="feature-copy">Hold &amp; swipe with mouse or finger</div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon chain-icon" aria-hidden="true">ϟ</div>
+          <div class="feature-name">CHAIN</div>
+          <div class="feature-copy">Cut fast for rising multipliers</div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon storm-icon" aria-hidden="true">✦</div>
+          <div class="feature-name">STORM</div>
+          <div class="feature-copy">Fill the meter, then unleash hell</div>
+        </div>
+      </div>
+
+      <button id="playBtn" class="btn btn-primary" type="button">PLAY</button>
+
+      <div class="menu-foot">
+        <span>BEST <b id="bestMenu">0</b></span>
+        <span class="dot">•</span>
+        <span class="warn">AVOID THE BOMBS</span>
+        <span class="dot">•</span>
+        <button class="link-btn js-mute" type="button" aria-label="Toggle sound">SOUND ON</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="pause" class="overlay hidden">
+    <section class="panel small-panel" role="dialog" aria-labelledby="pauseTitle">
+      <div class="badge">TAKE A BREATH</div>
+      <h2 id="pauseTitle" class="panel-title">PAUSED</h2>
+      <p class="panel-copy">The fruit will wait. Probably.</p>
+      <div class="button-stack">
+        <button id="resumeBtn" class="btn btn-primary" type="button">RESUME</button>
+        <button id="restartBtn" class="btn btn-ghost" type="button">RESTART</button>
+        <button id="quitBtn" class="btn btn-ghost" type="button">MAIN MENU</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="gameover" class="overlay hidden">
+    <section class="panel over-panel" role="dialog" aria-labelledby="overTitle">
+      <div class="badge">RUN COMPLETE</div>
+      <h2 id="overTitle" class="panel-title over-title">GAME OVER</h2>
+      <div class="final-score">
+        <div class="eyebrow">FINAL SCORE</div>
+        <div id="finalScore">0</div>
+        <div id="newBest" class="new-best hidden">NEW BEST!</div>
+      </div>
+      <div class="stats">
+        <div class="stat"><span id="statBest">0</span><small>BEST</small></div>
+        <div class="stat"><span id="statCombo">0</span><small>MAX CHAIN</small></div>
+        <div class="stat"><span id="statFruit">0</span><small>FRUIT</small></div>
+        <div class="stat"><span id="statTime">0s</span><small>TIME</small></div>
+      </div>
+      <div class="button-row">
+        <button id="againBtn" class="btn btn-primary" type="button">PLAY AGAIN</button>
+        <button id="homeBtn" class="btn btn-ghost" type="button">MENU</button>
+      </div>
+      <p class="panel-copy small">Chain faster. Cut cleaner. Fear the bombs.</p>
+    </section>
+  </div>
+</div>
+<script src="js/art.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/render.js"></script>
+<script src="js/game.js"></script>
+</body>
+</html>
